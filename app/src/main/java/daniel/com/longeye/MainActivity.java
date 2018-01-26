@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFlashOn;
     private boolean hasFlash;
     Camera.Parameters params;
-    MediaPlayer mp;
+
     private static int cameraId = 0;
     public static CameraPreview mPreview;
     public static LinearLayout preview;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+//        latający guzik
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        uruchamiam kamerę
         startCamera();
 
         runButton = (Button) findViewById(R.id.aparat);
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 camera = Camera.open();
                 params = camera.getParameters();
             } catch (RuntimeException e) {
-                Log.e("Camera Error. Failed to Open. Error: ", e.getMessage());
+                //Log.e("Camera Error. Failed to Open. Error: ", e.getMessage());
                 Toast.makeText(getApplicationContext(), "This is my Toast message!", Toast.LENGTH_LONG).show();
             }
         }
@@ -157,19 +159,26 @@ public class MainActivity extends AppCompatActivity {
 
         Log.e("Cam","Inside doInBackground");
         String msg = "";
-        // Do we have a camera?
+
         try {
+//            sprawdzenie czy urządzenie posiada kamerę
             if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 
             } else {
+//                odtąd obsługujemy kamerę z tyłu
+
                 cameraId = CAMERA_FACING_BACK;//A function that returns 0 for front camera
                 if (cameraId < 0) {
-
+                    Toast.makeText(getApplicationContext(), "id kamery < 0", Toast.LENGTH_LONG).show();
                 } else {
 
                     try {
+                        Log.e("Cam","wytropilem");
                         //camera = Camera.open(cameraId);//opens front cam
                         camera = Camera.open(); //when I use this I can on/off the flashlight,since I am calling the back camera.
+                        Log.e("Cam","tropienie bledu");
+//                        Returns the current settings for this Camera service. If modifications
+//                        are made to the returned Parameters, they must be passed to setParameters(Camera.Parameters) to take effect.
                         params = camera.getParameters();
                         Log.e("Cam","camera id " + cameraId);
                         Log.e("Cam","params " + params);
@@ -179,22 +188,32 @@ public class MainActivity extends AppCompatActivity {
 
 
                     try {
+
+                        mPreview = new CameraPreview(this, camera);
+                        preview = (LinearLayout) findViewById(R.id.content_main);
+                        preview.addView(mPreview);
+
+                        /*
                         mPreview = new CameraPreview(getApplicationContext(), camera);
 //                        mPreview = new CameraPreview(this, camera);
                         preview = (LinearLayout) findViewById(R.id.content_main);
                         preview.addView(mPreview);
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("layout", preview); musze przekazac ten preview do activity
-                        startActivity();
 
+//                        musze jakos przekazac preview do activity
+                        intent.putExtra("layout", R.layout.content_main);
+
+                        startActivity(intent);
+                        */
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Log.e("CATCH","camera.open nie dziala");
                     }
-
                 }
             }
         } catch (Exception e3) {
             e3.printStackTrace();
+            Log.e("CATCH","urzadzenie nie posiada kamery");
         }
     }
 
@@ -211,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
             camera.startPreview();
             isFlashOn = true;
 
-            // changing button/switch image
-            //toggleButtonImage();
         }
 
     }
@@ -231,9 +248,8 @@ public class MainActivity extends AppCompatActivity {
             camera.setParameters(params);
             camera.stopPreview();
             isFlashOn = false;
+            //startCamera();
 
-            // changing button/switch image
-            //toggleButtonImage();
         }
     }
 }
