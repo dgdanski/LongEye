@@ -18,8 +18,10 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:text="uruchom aparat"
-        android:id="@+id/aparat" />
+        android:id="@+id/aparat"
+        android:visibility="invisible"/>
 
 
 

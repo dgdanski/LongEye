@@ -1,9 +1,11 @@
 package daniel.com.longeye;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -32,15 +34,28 @@ public class MainActivity extends AppCompatActivity {
     private static int cameraId = 0;
     public static CameraPreview mPreview;
     public static LinearLayout preview;
+    public static Button buttonPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Log.e("API","wersja " + Build.VERSION.SDK_INT);
+
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        // Remember that you should never show the action bar if the
+        // status bar is hidden, so hide that too if necessary.
+//        ActionBar actionBar = getActionBar();
+//        actionBar.hide();
+
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
 //        latający guzik
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,18 +64,16 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
 
 //        uruchamiam kamerę
         startCamera();
 
+        /*
         runButton = (Button) findViewById(R.id.aparat);
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(getApplicationContext(), "This is my Toast message!",
-//                        Toast.LENGTH_LONG).show();
-                //openCamera();
-
                 if (isFlashOn) {
                     turnOffFlash();
                 } else {
@@ -68,18 +81,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        */
     }
 
 
-
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+    */
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -94,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    */
 
 
     private void openCamera() {
@@ -172,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "id kamery < 0", Toast.LENGTH_LONG).show();
                 } else {
 
+                    //samo uruchomienie kamery
                     try {
                         Log.e("Cam","wytropilem");
                         //camera = Camera.open(cameraId);//opens front cam
@@ -180,17 +196,23 @@ public class MainActivity extends AppCompatActivity {
 //                        Returns the current settings for this Camera service. If modifications
 //                        are made to the returned Parameters, they must be passed to setParameters(Camera.Parameters) to take effect.
                         params = camera.getParameters();
+                        camera.setDisplayOrientation(90);
+
                         Log.e("Cam","camera id " + cameraId);
                         Log.e("Cam","params " + params);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-
+                    //podanie obrazu z kamery na wyswietlacz
                     try {
-
+                        View view;
+                        Button button;
                         mPreview = new CameraPreview(this, camera);
-                        preview = (LinearLayout) findViewById(R.id.content_main);
+                        preview = (LinearLayout) findViewById(R.id.main);
+
+
                         preview.addView(mPreview);
 
                         /*
@@ -246,10 +268,19 @@ public class MainActivity extends AppCompatActivity {
             }
             params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
             camera.setParameters(params);
-            camera.stopPreview();
+//            camera.stopPreview();
             isFlashOn = false;
             //startCamera();
 
+        }
+    }
+
+    public void akcja(View v){
+//        Toast.makeText(getApplicationContext(), "This is my Toast message!", Toast.LENGTH_LONG).show();
+        if (isFlashOn) {
+            turnOffFlash();
+        } else {
+            turnOnFlash();
         }
     }
 }
