@@ -3,6 +3,7 @@ package daniel.com.longeye;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             parameters = camera.getParameters();
             camera.setDisplayOrientation(90);
 
+            turnOnAutoFocus();
+
             Log.e("Cam", "camera id " + cameraId);
             Log.e("Cam", "params " + parameters);
 
@@ -89,6 +92,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.e("CATCH", "Camera running failed");
         }
+    }
+
+    private void turnOnAutoFocus(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after 250ms
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                camera.setParameters(parameters);
+            }
+        }, 250);
     }
 
     private void passViewOnScreen(){
